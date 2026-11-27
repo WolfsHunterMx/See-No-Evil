@@ -254,7 +254,7 @@
         closeIntro();
     }
 
-    intro.addEventListener("click", start);
+     let clickCount = 0; let lastClick = 0;  intro.addEventListener("click", () => {     if (closed) return;      const now = performance.now();      if (now - lastClick <= 1000) {         clickCount++;     } else {         clickCount = 1;     }      lastClick = now;      if (clickCount >= 3) {         intro.style.transition = "none";         closeIntro();         intro.remove();         document.body.style.overflow = previousOverflow;         return;     }      start(); });
     document.addEventListener("keydown", keyboard);
 
     intro.focus({ preventScroll: true });
