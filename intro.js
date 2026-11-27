@@ -51,7 +51,6 @@
             text-align: center;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 2s ease;
         }
 
         #sne-reveal img {
@@ -83,6 +82,16 @@
             margin-top: 35px;
         }
 
+        #sne-static {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            image-rendering: pixelated;
+            pointer-events: none;
+        }
+
         @media (max-width: 600px) {
             #sne-terminal {
                 font-size: 10px;
@@ -93,6 +102,16 @@
 
             #sne-title {
                 letter-spacing: 3px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #sne-cursor {
+                animation: none;
+            }
+
+            #sne-intro {
+                transition: none;
             }
         }
     `;
@@ -113,7 +132,7 @@
 
         <div id="sne-reveal">
             <img src="./emblem.webp" alt="See No Evil">
-            
+
             <div id="sne-title">
                 <span>SEE</span>
                 <span>NO</span>
@@ -142,61 +161,194 @@
 
     const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+    const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    ).matches;
+
     let started = false;
     let closed = false;
+    let clickCount = 0;
+    let lastClick = 0;
+    let closeTimer = null;
+
+    // TERMINAL SCROLL
 
     function scrollTerminal() {
         terminal.scrollTop = terminal.scrollHeight;
     }
 
+    // HUMAN TYPING SIMULATION
+
     async function type(text, speed = 35) {
         for (const character of text) {
             if (closed) return;
+
             output.textContent += character;
             scrollTerminal();
+
             await wait(speed * (0.5 + Math.random()));
         }
+
+        if (closed) return;
 
         output.textContent += "\n";
         scrollTerminal();
     }
 
-    function closeIntro() {
-        if (closed) return;
+    // CLOSE INTRODUCTION
+
+    function cleanup() {
+        intro.remove();
+        style.remove();
+
+        document.body.style.overflow = previousOverflow;
+
+        document.removeEventListener("keydown", keyboard);
+    }
+
+    function closeIntro(instant = false) {
+        if (closed && !instant) return;
+
         closed = true;
+
+        if (instant || reducedMotion) {
+            clearTimeout(closeTimer);
+            cleanup();
+            return;
+        }
+
         intro.style.opacity = "0";
 
-        setTimeout(() => {
-            intro.remove();
-            document.body.style.overflow = previousOverflow;
-            document.removeEventListener("keydown", keyboard);
-        }, 1500);
+        closeTimer = setTimeout(cleanup, 1500);
     }
+
+    // KEYBOARD CONTROLS
 
     function keyboard(event) {
         if (event.key === "Escape") {
-            closeIntro();
-        } else if (event.key === "Enter" || event.key === " ") {
+            closeIntro(true);
+        } else if (
+            event.key === "Enter" ||
+            event.key === " "
+        ) {
             event.preventDefault();
             start();
         }
     }
 
+    // ANALOG SIGNAL INTERRUPTION
+
+    async function signalInterruption() {
+        if (closed) return;
+
+        cursor.style.display = "none";
+
+        const noise = document.createElement("canvas");
+
+        noise.id = "sne-static";
+        noise.width = 480;
+        noise.height = 270;
+
+        const ctx = noise.getContext("2d");
+
+        if (ctx && !reducedMotion) {
+            intro.appendChild(noise);
+
+            const pixels = ctx.createImageData(
+                noise.width,
+                noise.height
+            );
+
+            for (let frame = 0; frame < 14; frame++) {
+                if (closed) {
+                    noise.remove();
+                    return;
+                }
+
+                // Television static
+
+                for (
+                    let i = 0;
+                    i < pixels.data.length;
+                    i += 4
+                ) {
+                    const shade = Math.random() * 150;
+
+                    pixels.data[i] = shade;
+                    pixels.data[i + 1] = shade;
+                    pixels.data[i + 2] = shade;
+                    pixels.data[i + 3] = 255;
+                }
+
+                ctx.putImageData(pixels, 0, 0);
+
+                // Horizontal signal distortion
+
+                ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+
+                for (let band = 0; band < 5; band++) {
+                    ctx.fillRect(
+                        0,
+                        Math.random() * noise.height,
+                        noise.width,
+                        2 + Math.random() * 12
+                    );
+                }
+
+                // Replace terminal with SNE insignia
+
+                if (frame === 8) {
+                    terminal.style.visibility = "hidden";
+                    reveal.style.opacity = "1";
+                    noise.style.opacity = "0.45";
+                }
+
+                await wait(55);
+            }
+
+            noise.remove();
+        }
+
+        if (closed) return;
+
+        terminal.style.visibility = "hidden";
+        reveal.style.opacity = "1";
+    }
+
+    // INITIALIZATION SEQUENCE
+
     async function start() {
         if (started || closed) return;
+
         started = true;
         intro.style.cursor = "default";
 
         await wait(500);
 
-        await type("root@bastion:~$ ./sne_gateway --connect", 48);
+        await type(
+            "root@bastion:~$ ./sne_gateway --connect",
+            48
+        );
+
         await wait(400);
 
-        await type("[SYSTEM] Locating Dimension 001...", 18);
-        await type("[SYSTEM] Remote host detected.", 15);
+        await type(
+            "[SYSTEM] Locating Dimension 001...",
+            18
+        );
+
+        await type(
+            "[SYSTEM] Remote host detected.",
+            15
+        );
+
         await wait(350);
 
-        await type("root@bastion:~$ initialize public_archive", 42);
+        await type(
+            "root@bastion:~$ initialize public_archive",
+            42
+        );
+
         await wait(250);
 
         const modules = [
@@ -210,11 +362,14 @@
             "PUBLIC_GATEWAY"
         ];
 
+        // CODE CASCADE
+
         for (let i = 0; i < 120; i++) {
             if (closed) return;
 
-            const hex = Array.from({ length: 8 }, () =>
-                Math.floor(Math.random() * 256)
+            const hex = Array.from(
+                { length: 8 },
+                () => Math.floor(Math.random() * 256)
                     .toString(16)
                     .padStart(2, "0")
             ).join(" ").toUpperCase();
@@ -227,34 +382,73 @@
                 `[0x${address}] ${hex} :: ${modules[i % modules.length]} [OK]\n`;
 
             scrollTerminal();
+
             await wait(12 + Math.random() * 20);
         }
 
         await wait(300);
 
-        await type("[ OK ] SECURE CONNECTION ESTABLISHED.", 15);
-        await type("[ OK ] PUBLIC ARCHIVE UNLOCKED.", 15);
+        await type(
+            "[ OK ] SECURE CONNECTION ESTABLISHED.",
+            15
+        );
+
+        await type(
+            "[ OK ] PUBLIC ARCHIVE UNLOCKED.",
+            15
+        );
 
         await wait(500);
+
         await type("ACCESS GRANTED.", 65);
 
         await wait(600);
-        await type("Welcome, visitor.", 55);
-        await type("You are now behind the veil.", 55);
 
-        await wait(1200);
+        await type("Welcome, visitor.", 55);
+
+        await type(
+            "You are now behind the veil.",
+            55
+        );
+
+        // SIGNAL INTERRUPTION
+
+        await wait(350);
 
         if (closed) return;
 
-        cursor.style.display = "none";
-        reveal.style.opacity = "1";
+        await signalInterruption();
 
-        await wait(4500);
+        if (closed) return;
+
+        // SNE INSIGNIA PRESENTATION
+
+        await wait(3500);
 
         closeIntro();
     }
 
-     let clickCount = 0; let lastClick = 0;  intro.addEventListener("click", () => {     if (closed) return;      const now = performance.now();      if (now - lastClick <= 1000) {         clickCount++;     } else {         clickCount = 1;     }      lastClick = now;      if (clickCount >= 3) {         intro.style.transition = "none";         closeIntro();         intro.remove();         document.body.style.overflow = previousOverflow;         return;     }      start(); });
+    // SECRET TRIPLE-CLICK BYPASS
+
+    intro.addEventListener("click", () => {
+        const now = performance.now();
+
+        if (now - lastClick <= 1000) {
+            clickCount++;
+        } else {
+            clickCount = 1;
+        }
+
+        lastClick = now;
+
+        if (clickCount >= 3) {
+            closeIntro(true);
+            return;
+        }
+
+        start();
+    });
+
     document.addEventListener("keydown", keyboard);
 
     intro.focus({ preventScroll: true });
