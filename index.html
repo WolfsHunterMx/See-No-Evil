@@ -1,0 +1,416 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEE NO EVIL | Intelligence Network</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #080d14;
+  color: #dce5ed;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  padding: 18px 5%;
+  background: #101923;
+  border-bottom: 1px solid #263a4b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  letter-spacing: 4px;
+  font-weight: bold;
+}
+
+.brand img {
+  width: 48px;
+}
+
+nav a {
+  color: #79b7e5;
+  text-decoration: none;
+  font-size: 12px;
+  margin: 10px;
+}
+
+nav a:hover {
+  color: white;
+}
+
+.hero {
+  padding: 100px 20px;
+  text-align: center;
+  background: radial-gradient(
+    ellipse at center,
+    #192c40,
+    #080d14 75%
+  );
+}
+
+.hero img {
+  width: 130px;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-size: clamp(32px, 6vw, 65px);
+  letter-spacing: 10px;
+  margin: 15px 0;
+}
+
+.subtitle {
+  color: #79b7e5;
+  letter-spacing: 4px;
+  font-size: 13px;
+}
+
+.status {
+  color: #79cba2;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.button {
+  display: inline-block;
+  margin-top: 25px;
+  padding: 15px 30px;
+  border: 1px solid #79b7e5;
+  color: #79b7e5;
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 2px;
+  transition: .3s;
+}
+
+.button:hover {
+  background: #79b7e5;
+  color: #080d14;
+}
+
+main {
+  max-width: 1200px;
+  margin: auto;
+  padding: 30px 20px;
+}
+
+section {
+  margin-bottom: 60px;
+}
+
+.section-title {
+  color: #79b7e5;
+  letter-spacing: 3px;
+  font-size: 17px;
+  border-bottom: 1px solid #263a4b;
+  padding-bottom: 15px;
+}
+
+.panel {
+  background: #101923;
+  border: 1px solid #263a4b;
+  padding: 25px;
+  line-height: 1.8;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.stat {
+  background: #101923;
+  border: 1px solid #263a4b;
+  text-align: center;
+  padding: 25px 10px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 32px;
+  color: #79b7e5;
+}
+
+.stat span {
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.operator {
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  min-height: 230px;
+  aspect-ratio: 4 / 1;
+  margin-bottom: 18px;
+  overflow: hidden;
+  border: 1px solid #263a4b;
+  border-left: 4px solid var(--accent);
+  text-decoration: none;
+  color: white;
+}
+
+.operator img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  transition: transform .5s;
+}
+
+.operator:hover img {
+  transform: scale(1.05);
+}
+
+.operator::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    270deg,
+    rgba(8,13,20,.97),
+    rgba(8,13,20,.35) 60%,
+    transparent
+  );
+}
+
+.operator-info {
+  position: relative;
+  z-index: 1;
+  margin-left: auto;
+  text-align: right;
+  padding: 25px;
+}
+
+.operator-info h2 {
+  margin: 8px 0;
+  font-size: clamp(20px, 3vw, 32px);
+}
+
+.operator-info small {
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+
+.operator-info p {
+  font-size: 12px;
+  color: #b5c4d0;
+}
+
+footer {
+  text-align: center;
+  padding: 35px;
+  border-top: 1px solid #263a4b;
+  background: #101923;
+  color: #687d90;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+@media (max-width: 600px) {
+  header {
+    justify-content: center;
+  }
+
+  .hero {
+    padding: 60px 15px;
+  }
+
+  .hero h1 {
+    letter-spacing: 5px;
+  }
+
+  .operator {
+    min-height: 250px;
+  }
+
+  .operator-info {
+    padding: 15px;
+  }
+
+  .stat strong {
+    font-size: 25px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    <img src="https://ella.janitorai.com/media-approved/pIPjsQHV0CdaZNJMGD4Y0.webp" alt="SNE emblem">
+    SEE NO EVIL
+  </div>
+
+  <nav>
+    <a href="#home">HOME</a>
+    <a href="#organization">ORGANIZATION</a>
+    <a href="#personnel">PERSONNEL</a>
+    <a href="#archives">ARCHIVES</a>
+  </nav>
+</header>
+
+<div class="hero" id="home">
+
+  <img src="https://ella.janitorai.com/media-approved/pIPjsQHV0CdaZNJMGD4Y0.webp" alt="See No Evil insignia">
+
+  <div class="status">● NETWORK ONLINE</div>
+
+  <h1>SEE NO EVIL</h1>
+
+  <div class="subtitle">
+    INTERDIMENSIONAL INTELLIGENCE NETWORK
+  </div>
+
+  <p>Beyond the boundaries of human perception.</p>
+
+  <a class="button" href="#personnel">
+    ACCESS DATABASE
+  </a>
+
+</div>
+
+<main>
+
+<section id="organization">
+
+  <h2 class="section-title">
+    01 // ORGANIZATION OVERVIEW
+  </h2>
+
+  <div class="panel">
+    Established in 1945, See No Evil is an organization
+    dedicated to investigating interdimensional phenomena
+    and protecting humanity from threats beyond
+    conventional reality.
+
+    <br><br>
+
+    Headquarters: Bastión Boreal<br>
+    Origin: Dimension 001<br>
+    Current Generation: Fifth
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <strong>200</strong>
+      <span>PERSONNEL</span>
+    </div>
+
+    <div class="stat">
+      <strong>12</strong>
+      <span>RIFT WALKERS</span>
+    </div>
+
+    <div class="stat">
+      <strong>05</strong>
+      <span>GENERATION</span>
+    </div>
+  </div>
+
+</section>
+
+<section id="personnel">
+
+  <h2 class="section-title">
+    02 // FEATURED OPERATORS
+  </h2>
+
+  <a class="operator"
+     style="--accent:#9275d9"
+     href="https://janitorai.com/characters/3d6b2943-c83b-4ac6-8ae8-115e8e14f9b9_character-max-lightstar-see-no-evil"
+     target="_blank" rel="noopener">
+
+    <img src="https://ella.janitorai.com/media-approved/NDuqx2BR5Y3AeaBuUYsrL.webp" alt="Max Lightstar">
+
+    <div class="operator-info">
+      <small>01 // COMMAND</small>
+      <h2>MAX LIGHTSTAR</h2>
+      <p>Captain | The Only Void Walker</p>
+      <small>ACCESS PERSONNEL FILE →</small>
+    </div>
+  </a>
+
+  <a class="operator"
+     style="--accent:#79cba2"
+     href="https://janitorai.com/characters/f6bb42db-5d70-476f-93c3-0bb69fabcc80_character-adler-claus-see-no-evil"
+     target="_blank" rel="noopener">
+
+    <img src="https://ella.janitorai.com/media-approved/LPkkBWg6_gqT8rsY_pxkS.webp" alt="Adler Claus">
+
+    <div class="operator-info">
+      <small>02 // RECONNAISSANCE</small>
+      <h2>ADLER CLAUS</h2>
+      <p>Lieutenant | Dimensional Reconnaissance</p>
+      <small>ACCESS PERSONNEL FILE →</small>
+    </div>
+  </a>
+
+  <a class="operator"
+     style="--accent:#79b7e5"
+     href="https://janitorai.com/characters/16aa904a-b8d1-42ac-a5e6-b43aca7d64b9_character-marcus-morningstar-see-no-evil"
+     target="_blank" rel="noopener">
+
+    <img src="https://ella.janitorai.com/media-approved/q7FVKw1IN1x1JuvCHHIE1.webp" alt="Marcus Morningstar">
+
+    <div class="operator-info">
+      <small>03 // OPERATIONS</small>
+      <h2>MARCUS MORNINGSTAR</h2>
+      <p>Lieutenant | Rift Walker</p>
+      <small>ACCESS PERSONNEL FILE →</small>
+    </div>
+  </a>
+
+</section>
+
+<section id="archives">
+
+  <h2 class="section-title">
+    03 // CLASSIFIED ARCHIVES
+  </h2>
+
+  <div class="panel">
+    <div class="status">● DATABASE INITIALIZED</div>
+
+    <p>
+      Dimensional records, historical documents and
+      operational archives are currently being compiled.
+    </p>
+
+    <p style="color:#79b7e5">
+      ADDITIONAL FILES PENDING RELEASE.
+    </p>
+  </div>
+
+</section>
+
+</main>
+
+<footer>
+  SEE NO EVIL © WOLFSHUNTER<br><br>
+  BASTIÓN BOREAL // DIMENSION 001<br><br>
+  POST VELL<br><br>
+  A fictional universe and creative project.
+</footer>
+
+</body>
+</html>
